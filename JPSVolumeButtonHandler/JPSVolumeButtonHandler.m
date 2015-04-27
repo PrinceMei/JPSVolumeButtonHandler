@@ -104,7 +104,6 @@ static CGFloat minVolume                    = 0.00001f;
     self.volumeView = [[MPVolumeView alloc] initWithFrame:CGRectMake(MAXFLOAT, MAXFLOAT, 0, 0)];
     [[[[UIApplication sharedApplication] windows] firstObject] addSubview:self.volumeView];
 }
-
     
 - (void)setInitialVolume {
     self.initialVolume = self.session.outputVolume;
@@ -115,6 +114,19 @@ static CGFloat minVolume                    = 0.00001f;
         self.initialVolume = minVolume;
         [self setSystemVolume:self.initialVolume];
     }
+}
+
+- (void)setVolumeHandlerDisabled:(BOOL)volumeHandlerDisabled {
+  BOOL oldVolumeHandlerDisabled = _volumeHandlerDisabled;
+  _volumeHandlerDisabled = volumeHandlerDisabled;
+  
+  if (oldVolumeHandlerDisabled != volumeHandlerDisabled) {
+    if (volumeHandlerDisabled) {
+      [self.volumeView removeFromSuperview];
+    } else {
+      [[[[UIApplication sharedApplication] windows] firstObject] addSubview:self.volumeView];
+    }
+  }
 }
 
 #pragma mark - Convenience
@@ -135,7 +147,7 @@ static CGFloat minVolume                    = 0.00001f;
         CGFloat newVolume = [change[NSKeyValueChangeNewKey] floatValue];
         CGFloat oldVolume = [change[NSKeyValueChangeOldKey] floatValue];
         
-        if (newVolume == self.initialVolume) {
+        if (newVolume == self.initialVolume || self.volumeHandlerDisabled) {
             // Resetting volume, skip blocks
             return;
         }
