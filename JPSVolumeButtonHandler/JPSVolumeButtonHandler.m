@@ -151,15 +151,23 @@ static CGFloat minVolume                    = 0.00001f;
             // Resetting volume, skip blocks
             return;
         }
-        
+      
+        BOOL resetVolume = NO;
         if (newVolume > oldVolume) {
-            if (self.upBlock) self.upBlock();
+            if (self.upBlock) {
+                resetVolume = self.upBlock(oldVolume, newVolume);
+            }
         } else {
-            if (self.downBlock) self.downBlock();
+            if (self.downBlock) {
+                resetVolume = self.downBlock(oldVolume, newVolume);
+            }
         }
         
         // Reset volume
-        [self setSystemVolume:self.initialVolume];
+        if(resetVolume) {
+            [self setSystemVolume:self.initialVolume];
+        }
+      
     } else {
         [super observeValueForKeyPath:keyPath ofObject:object change:change context:context];
     }

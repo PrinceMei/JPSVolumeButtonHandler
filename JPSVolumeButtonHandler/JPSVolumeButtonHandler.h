@@ -8,7 +8,7 @@
 
 #import <Foundation/Foundation.h>
 
-typedef void (^JPSVolumeButtonBlock)();
+typedef BOOL (^JPSVolumeButtonBlock)(float oldVolume, float newVolume);
 
 @interface JPSVolumeButtonHandler : NSObject
 
