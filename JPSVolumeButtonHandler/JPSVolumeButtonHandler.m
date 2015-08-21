@@ -44,9 +44,11 @@ static CGFloat minVolume                    = 0.00001f;
 }
 
 - (void)dealloc {
+  if (self.session) {
     [self.session removeObserver:self forKeyPath:sessionVolumeKeyPath];
-    [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.volumeView removeFromSuperview];
+  }
+  [[NSNotificationCenter defaultCenter] removeObserver:self];
+  [self.volumeView removeFromSuperview];
 }
 
 - (void)setupSession {
